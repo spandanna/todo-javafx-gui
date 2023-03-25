@@ -1,0 +1,8 @@
+.root {
+    -fx-background-color: #f2f2f2;
+}
+
+.header {
+    -fx-text-fill: #4d4d4d;
+}
+/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
