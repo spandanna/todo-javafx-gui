@@ -68,7 +68,6 @@ public class Controller {
 	private void updateToDoItem(String toDoText, boolean completed) throws ClassNotFoundException {
 	    String sql = "UPDATE todo SET completed = ? WHERE name = ?";
 	    try {
-//	        Connection connection = connect();
 	        PreparedStatement statement = connection.prepareStatement(sql);
 	        statement.setInt(1, completed ? 1 : 0);
 	        statement.setString(2, toDoText);
@@ -77,6 +76,7 @@ public class Controller {
 	        e.printStackTrace();
 	    }
 	}
+	
     public void addToDoItem() throws ClassNotFoundException {
         String toDoText = newToDoTextField.getText();
         if (toDoText != null && !toDoText.isEmpty()) {
@@ -92,7 +92,6 @@ public class Controller {
     private void addToDoItemToDB(String newToDoText) throws ClassNotFoundException {
     	String sql = "INSERT INTO todo (name, completed) VALUES (?, ?)";
         try {
-//        	Connection connection = connect();
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, newToDoText);
             statement.setInt(2, 0);
@@ -105,7 +104,6 @@ public class Controller {
     private void loadDataFromDatabase() {
         String sql = "SELECT * FROM todo";
         try {
-//        	Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -134,15 +132,5 @@ public class Controller {
         }
     }
     
-//	private static Connection connect() throws ClassNotFoundException, SQLException {
-//    	Class.forName("org.sqlite.JDBC"); //force Java ClassLoader to load class
-//	    try {
-//	    	connection = DriverManager.getConnection("jdbc:sqlite:src/application/database.db");
-//	    } catch (SQLException exception) {
-//	        return null;
-//	    }
-//    return connection;
-//}
-
 }
 
