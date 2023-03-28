@@ -35,6 +35,7 @@ public class Controller {
 
     public void initialize() {
         dateLabel.setText("To Do - " + java.time.LocalDate.now());
+        connectToDatabase();
         loadDataFromDatabase();
         
         // Add listener to the newToDoTextField to detect when the Enter key is pressed
@@ -67,7 +68,7 @@ public class Controller {
 	private void updateToDoItem(String toDoText, boolean completed) throws ClassNotFoundException {
 	    String sql = "UPDATE todo SET completed = ? WHERE name = ?";
 	    try {
-	        Connection connection = connect();
+//	        Connection connection = connect();
 	        PreparedStatement statement = connection.prepareStatement(sql);
 	        statement.setInt(1, completed ? 1 : 0);
 	        statement.setString(2, toDoText);
@@ -91,7 +92,7 @@ public class Controller {
     private void addToDoItemToDB(String newToDoText) throws ClassNotFoundException {
     	String sql = "INSERT INTO todo (name, completed) VALUES (?, ?)";
         try {
-        	Connection connection = connect();
+//        	Connection connection = connect();
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, newToDoText);
             statement.setInt(2, 0);
@@ -104,7 +105,7 @@ public class Controller {
     private void loadDataFromDatabase() {
         String sql = "SELECT * FROM todo";
         try {
-        	Connection connection = connect();
+//        	Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
@@ -114,22 +115,34 @@ public class Controller {
                 newCheckBox.setText(name);
                 newCheckBox.setSelected(completed);
                 vbox.getChildren().add(index, newCheckBox); 
-//                index++;
-//                newToDoTextField.clear();
+                index++;
+                newToDoTextField.clear();
                 }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-	private static Connection connect() throws ClassNotFoundException, SQLException {
-    	Class.forName("org.sqlite.JDBC"); //force Java ClassLoader to load class
-	    try {
-	    	connection = DriverManager.getConnection("jdbc:sqlite:src/application/database.db");
-	    } catch (SQLException exception) {
-	        return null;
-	    }
-    return connection;
-}
+    
+    private void connectToDatabase() {
+        try {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:src/application/database.db");
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS todo (id INTEGER PRIMARY KEY, name TEXT, completed BOOLEAN)");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+//	private static Connection connect() throws ClassNotFoundException, SQLException {
+//    	Class.forName("org.sqlite.JDBC"); //force Java ClassLoader to load class
+//	    try {
+//	    	connection = DriverManager.getConnection("jdbc:sqlite:src/application/database.db");
+//	    } catch (SQLException exception) {
+//	        return null;
+//	    }
+//    return connection;
+//}
 
 }
 
