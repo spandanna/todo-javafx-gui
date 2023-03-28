@@ -29,14 +29,14 @@ public class Controller {
     private Button addButton;
 
     @FXML
-    private Label dateLabel;
+    private Label title;
 
     private int index = 0;
 
     public void initialize() {
-        dateLabel.setText("To Do - " + java.time.LocalDate.now());
+        title.setText("To Do - " + java.time.LocalDate.now());
         connectToDatabase();
-        loadDataFromDatabase();
+        loadFromDatabase();
         
         // Add listener to the newToDoTextField to detect when the Enter key is pressed
         newToDoTextField.setOnKeyPressed(event -> {
@@ -101,7 +101,7 @@ public class Controller {
         }
     }
 
-    private void loadDataFromDatabase() {
+    private void loadFromDatabase() {
         String sql = "SELECT * FROM todo";
         try {
             Statement statement = connection.createStatement();
