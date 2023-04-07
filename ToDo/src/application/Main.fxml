@@ -15,9 +15,11 @@
         </font>
     </Label>
     <Separator />
-    <VBox fx:id="vbox" spacing="5"/>
+    <VBox fx:id="vbox" spacing="5">
     <HBox>
         <TextField fx:id="newToDoTextField" promptText="Enter a new to do item"/>
+        <DatePicker fx:id="newDueDatePicker" promptText="Due date"/>
         <Button fx:id="addButton" text="+" onAction="#addToDoItem"/>
     </HBox>
+    </VBox>
 </VBox>

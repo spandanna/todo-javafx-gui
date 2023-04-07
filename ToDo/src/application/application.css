@@ -5,4 +5,11 @@
 .header {
     -fx-text-fill: #4d4d4d;
 }
+.delete-button {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-padding: 5px 8px;
+    -fx-font-size: 12px;
+}
+
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
