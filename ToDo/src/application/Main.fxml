@@ -19,6 +19,7 @@
             <Font size="24.0" />
         </font>
     </Label>
+   <DatePicker fx:id="datePicker" />
     <Separator />
     <VBox fx:id="todolist" spacing="5">
     <HBox>

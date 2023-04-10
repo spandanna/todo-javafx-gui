@@ -6,10 +6,11 @@
     -fx-text-fill: #4d4d4d;
 }
 .delete-button {
-    -fx-background-color: red;
-    -fx-text-fill: white;
-    -fx-padding: 5px 8px;
-    -fx-font-size: 12px;
+	-fx-background-color: red;
+	-fx-padding: 2px;
+}
+.delete-button:hover {
+    -fx-background-color: #383838;
 }
 
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */

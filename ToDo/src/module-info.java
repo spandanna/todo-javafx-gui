@@ -4,6 +4,7 @@ module ToDo {
     requires java.sql;
 	requires org.xerial.sqlitejdbc;
 	requires javafx.graphics;
+	requires javafx.base;
 
     opens application to javafx.fxml;
     exports application;

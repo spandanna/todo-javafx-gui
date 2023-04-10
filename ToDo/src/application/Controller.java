@@ -6,7 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -32,6 +36,9 @@ public class Controller {
     private DatePicker newDueDatePicker;
     
     @FXML
+    private DatePicker datePicker;
+    
+    @FXML
     private TextField newToDoTextField;
 
     private static final String DB_NAME = "database.db";
@@ -42,14 +49,20 @@ public class Controller {
     static final String COLUMN_DUE_DATE = "due_date";
     static final String COLUMN_COMPLETED = "completed";
     private int index = 0;
-
+    public LocalDate currentDate = LocalDate.now();
+    
     public void initialize() {
         setTitle();
         connectToDatabase();
-		loadFromDatabase();
+//		loadFromDatabase();
 		setNewTextField();
-        
-        
+		datePicker.setValue(currentDate);
+		datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+			currentDate = newValue;
+			setTitle();
+			removeItemsFromScreen();
+			loadDueItems(newValue);
+		});
     }
 
     private void setNewTextField() {
@@ -61,7 +74,7 @@ public class Controller {
     }
     
     private void setTitle() {
-    	title.setText("To Do - " + java.time.LocalDate.now());
+    	title.setText("To Do " + currentDate.toString());
     }
     
     private void createNewHBox(CheckBox checkBox, Button deleteButton) {
@@ -81,6 +94,8 @@ public class Controller {
 	    	Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
 	        createNewHBox(newCheckBox, deleteButton);
 	    	newItem.addToDB();
+	    	removeItemsFromScreen();
+	    	loadDueItems(currentDate);
 	        index++;
 	        newToDoTextField.clear();
 	        newDueDatePicker.setValue(null);
@@ -108,25 +123,46 @@ public class Controller {
 	    return deleteButton;
 	}
 
-    private void loadFromDatabase() {
-        String sql = "SELECT * FROM " + TABLE_TODO;
-    	try { 
-    		PreparedStatement statement = connection.prepareStatement(sql);
-    		ResultSet resultSet = statement.executeQuery();
-    		while (resultSet.next()) {
-    			TodoItem newItem = TodoItem.fromResultSet(resultSet);
-	            CheckBox newCheckBox = createCheckBox(newItem, newItem.getCompleted());
-		        Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
-	            HBox hbox = new HBox(newCheckBox, deleteButton);
-	            
-	            todolist.getChildren().add(index, hbox); 
-	            index++;
-	            newToDoTextField.clear();
+	private void removeItemsFromScreen() {
+	    ObservableList<Node> items = todolist.getChildren();
+	    List<Node> itemsToRemove = new ArrayList<>();
+
+	    for (Node item : items) {
+	        if (item instanceof HBox) {
+	            HBox hbox = (HBox) item;
+	            if (hbox.getChildren().stream().anyMatch(node -> node instanceof CheckBox)) {
+	                itemsToRemove.add(item);
 	            }
-        } catch (SQLException e) {
-        	e.printStackTrace();
-        }
-    }
+	        }
+	    }
+
+	    todolist.getChildren().removeAll(itemsToRemove);
+	    index = 0;
+	}
+	
+	private void loadDueItems(LocalDate dueDate) {
+		String sql = "SELECT * FROM " + TABLE_TODO + " WHERE " + COLUMN_DUE_DATE + " = ?";
+        try {
+        	PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setObject(1, dueDate);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+			TodoItem newItem = TodoItem.fromResultSet(resultSet);
+            CheckBox newCheckBox = createCheckBox(newItem, newItem.getCompleted());
+	        Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
+            HBox hbox = new HBox(newCheckBox, deleteButton);
+            todolist.getChildren().add(index, hbox); 
+            index++;
+            newToDoTextField.clear();
+			}
+            
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        
+	}
 
     
     private void connectToDatabase() {
