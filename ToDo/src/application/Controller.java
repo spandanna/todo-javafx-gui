@@ -78,12 +78,12 @@ public class Controller {
     }
     
     private void createNewHBox(CheckBox checkBox, Button deleteButton) {
-    	HBox hbox = new HBox();
+        HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.setSpacing(5);
-        hbox.getChildren().add(checkBox);	
+        hbox.getChildren().add(checkBox);    
         hbox.getChildren().add(deleteButton);
-        todolist.getChildren().add(index, hbox);
+        todolist.getChildren().add(hbox);
     }
     
 	public void addToDoItem() {
@@ -96,7 +96,6 @@ public class Controller {
 	    	newItem.addToDB();
 	    	removeItemsFromScreen();
 	    	loadDueItems(currentDate);
-	        index++;
 	        newToDoTextField.clear();
 	        newDueDatePicker.setValue(null);
 	    }
@@ -137,7 +136,6 @@ public class Controller {
 	    }
 
 	    todolist.getChildren().removeAll(itemsToRemove);
-	    index = 0;
 	}
 	
 	private void loadDueItems(LocalDate dueDate) {
@@ -147,17 +145,15 @@ public class Controller {
 			statement.setObject(1, dueDate);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-			TodoItem newItem = TodoItem.fromResultSet(resultSet);
-            CheckBox newCheckBox = createCheckBox(newItem, newItem.getCompleted());
-	        Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
-            HBox hbox = new HBox(newCheckBox, deleteButton);
-            todolist.getChildren().add(index, hbox); 
-            index++;
-            newToDoTextField.clear();
+				TodoItem newItem = TodoItem.fromResultSet(resultSet);
+	            CheckBox newCheckBox = createCheckBox(newItem, newItem.getCompleted());
+		        Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
+	            HBox hbox = new HBox(newCheckBox, deleteButton);
+	            todolist.getChildren().add(hbox); 
+	            newToDoTextField.clear();
 			}
             
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         
