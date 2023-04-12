@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -48,7 +49,6 @@ public class Controller {
     static final String COLUMN_NAME = "name";
     static final String COLUMN_DUE_DATE = "due_date";
     static final String COLUMN_COMPLETED = "completed";
-    private int index = 0;
     public LocalDate currentDate = LocalDate.now();
     
     public void initialize() {
@@ -101,6 +101,32 @@ public class Controller {
 	    }
 	}
 
+	public void editToDoItem(@SuppressWarnings("exports") CheckBox checkBox) {
+		String oldText = checkBox.getText();
+	    TextInputDialog dialog = new TextInputDialog(oldText);
+	    dialog.setTitle("Edit To Do Item");
+	    dialog.setHeaderText(null);
+	    dialog.setContentText("Enter new text:");
+	    Optional<String> result = dialog.showAndWait();
+	    result.ifPresent(newText -> {
+	    		checkBox.setText(newText);
+	    		updateTodoItemText(oldText, newText);
+	    		});
+	    
+	}
+	
+	public void updateTodoItemText(String oldText, String newText) {
+		String sql = "UPDATE " + TABLE_TODO + " SET " + COLUMN_NAME + " = ? WHERE " + COLUMN_NAME + " = ?";
+		try {
+		        PreparedStatement statement = Controller.connection.prepareStatement(sql);
+		        statement.setString(1, newText);
+		        statement.setString(2, oldText);
+		        statement.executeUpdate();
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+	}
+ 
 	private CheckBox createCheckBox(TodoItem newItem, int completed) {
 	    CheckBox newCheckBox = new CheckBox();
 	    newCheckBox.setText(newItem.getName());
@@ -108,8 +134,14 @@ public class Controller {
 	    newCheckBox.setOnAction(event -> {
 	        newItem.setCompleted(newCheckBox.isSelected() ? 1 : 0);
 	    });
+	    newCheckBox.setOnMouseClicked(event -> {
+	        if (event.getClickCount() == 2) {
+	            editToDoItem(newCheckBox);
+	        }
+	    });
 	    return newCheckBox;
 	}
+
 	
 	private Button createDeleteButton(VBox todolist, TodoItem item, CheckBox checkBox) {
 	    Button deleteButton = new Button("x");
@@ -156,7 +188,6 @@ public class Controller {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-        
         
 	}
 

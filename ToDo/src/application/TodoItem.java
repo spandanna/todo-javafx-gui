@@ -91,5 +91,7 @@ public class TodoItem {
 		        statement.executeUpdate();
 		    } catch (SQLException e) {
 		        e.printStackTrace();
+		    }
 	}
-}}
+
+}
