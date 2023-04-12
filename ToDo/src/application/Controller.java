@@ -54,9 +54,9 @@ public class Controller {
     public void initialize() {
         setTitle();
         connectToDatabase();
-//		loadFromDatabase();
 		setNewTextField();
 		datePicker.setValue(currentDate);
+		loadDueItems(currentDate);
 		datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
 			currentDate = newValue;
 			setTitle();
@@ -144,7 +144,7 @@ public class Controller {
 
 	
 	private Button createDeleteButton(VBox todolist, TodoItem item, CheckBox checkBox) {
-	    Button deleteButton = new Button("x");
+	    Button deleteButton = new Button();
 	    deleteButton.getStyleClass().add("delete-button");
 	    deleteButton.setOnAction(event -> {
 	        Node hbox = deleteButton.getParent();
