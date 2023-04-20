@@ -24,7 +24,7 @@
     <VBox fx:id="todolist" spacing="5">
     <HBox>
         <TextField fx:id="newToDoTextField" promptText="Enter a new to do item" />
-        <DatePicker fx:id="newDueDatePicker" promptText="Due date" />
+        <DatePicker fx:id="newDoDatePicker" promptText="Do date" />
         <Button fx:id="addButton" onAction="#addToDoItem" text="+" />
     </HBox>
     </VBox>

@@ -34,7 +34,7 @@ public class Controller {
     private Button addButton;
 
     @FXML
-    private DatePicker newDueDatePicker;
+    private DatePicker newDoDatePicker;
     
     @FXML
     private DatePicker datePicker;
@@ -45,9 +45,9 @@ public class Controller {
     private static final String DB_NAME = "database.db";
     private static final String CONNECTION_STRING = "jdbc:sqlite:" + "src/application/" + DB_NAME;
     static final String TABLE_TODO = "todos";
-    private static final String COLUMN_ID = "id";
+    static final String COLUMN_ID = "id";
     static final String COLUMN_NAME = "name";
-    static final String COLUMN_DUE_DATE = "due_date";
+    static final String COLUMN_DO_DATE = "do_date";
     static final String COLUMN_COMPLETED = "completed";
     public LocalDate currentDate = LocalDate.now();
     
@@ -87,9 +87,9 @@ public class Controller {
     }
     
 	public void addToDoItem() {
-	    TodoItem newItem = new TodoItem(newToDoTextField.getText(), newDueDatePicker.getValue(), 0);
+	    TodoItem newItem = TodoItem.fromInput(newToDoTextField.getText(), newDoDatePicker.getValue());
 	    
-	    if (newItem.getName() != null && newItem.getDueDate() != null) {
+	    if (newItem.getName() != null && newItem.getDoDate() != null) {
 	    	CheckBox newCheckBox = createCheckBox(newItem, 0);
 	    	Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
 	        createNewHBox(newCheckBox, deleteButton);
@@ -97,35 +97,25 @@ public class Controller {
 	    	removeItemsFromScreen();
 	    	loadDueItems(currentDate);
 	        newToDoTextField.clear();
-	        newDueDatePicker.setValue(null);
+	        newDoDatePicker.setValue(null);
 	    }
 	}
 
-	public void editToDoItem(@SuppressWarnings("exports") CheckBox checkBox) {
-		String oldText = checkBox.getText();
+	public void editToDoItem(@SuppressWarnings("exports") CheckBox checkBox, TodoItem newItem) {
+		String oldText = newItem.getName();
 	    TextInputDialog dialog = new TextInputDialog(oldText);
 	    dialog.setTitle("Edit To Do Item");
 	    dialog.setHeaderText(null);
 	    dialog.setContentText("Enter new text:");
 	    Optional<String> result = dialog.showAndWait();
 	    result.ifPresent(newText -> {
+	    		newItem.setName(newText);
 	    		checkBox.setText(newText);
-	    		updateTodoItemText(oldText, newText);
+	    		newItem.updateName();
 	    		});
 	    
 	}
 	
-	public void updateTodoItemText(String oldText, String newText) {
-		String sql = "UPDATE " + TABLE_TODO + " SET " + COLUMN_NAME + " = ? WHERE " + COLUMN_NAME + " = ?";
-		try {
-		        PreparedStatement statement = Controller.connection.prepareStatement(sql);
-		        statement.setString(1, newText);
-		        statement.setString(2, oldText);
-		        statement.executeUpdate();
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		    }
-	}
  
 	private CheckBox createCheckBox(TodoItem newItem, int completed) {
 	    CheckBox newCheckBox = new CheckBox();
@@ -136,7 +126,7 @@ public class Controller {
 	    });
 	    newCheckBox.setOnMouseClicked(event -> {
 	        if (event.getClickCount() == 2) {
-	            editToDoItem(newCheckBox);
+	            editToDoItem(newCheckBox, newItem);
 	        }
 	    });
 	    return newCheckBox;
@@ -170,11 +160,11 @@ public class Controller {
 	    todolist.getChildren().removeAll(itemsToRemove);
 	}
 	
-	private void loadDueItems(LocalDate dueDate) {
-		String sql = "SELECT * FROM " + TABLE_TODO + " WHERE " + COLUMN_DUE_DATE + " = ?";
+	private void loadDueItems(LocalDate doDate) {
+		String sql = "SELECT * FROM " + TABLE_TODO + " WHERE " + COLUMN_DO_DATE + " = ?";
         try {
         	PreparedStatement statement = connection.prepareStatement(sql);
-			statement.setObject(1, dueDate);
+			statement.setObject(1, doDate);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				TodoItem newItem = TodoItem.fromResultSet(resultSet);
@@ -199,8 +189,8 @@ public class Controller {
             Statement statement = connection.createStatement();
             statement.executeUpdate(
             		"CREATE TABLE IF NOT EXISTS " + TABLE_TODO +
-            		" (" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NAME + " TEXT, "
-            		+ COLUMN_DUE_DATE + " DATE, " + COLUMN_COMPLETED + " BOOLEAN)"
+            		" (" + COLUMN_ID + " STRING PRIMARY KEY, " + COLUMN_NAME + " TEXT, "
+            		+ COLUMN_DO_DATE + " DATE, " + COLUMN_COMPLETED + " BOOLEAN)"
             		);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
