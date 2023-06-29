@@ -26,7 +26,7 @@
         <TextField fx:id="newToDoTextField" promptText="Enter a new to do item" />
         <DatePicker fx:id="newDoDatePicker" promptText="Do date" />
         <Button fx:id="addButton" onAction="#addToDoItem" text="+" />
-    </HBox>
-    <Button fx:id="habitButton" onAction="#openHabitWindow" text="Habits" />
+	</HBox>
+<!-- <Button fx:id="habitButton" onAction="#openHabitWindow" text="Habits"></Button> -->
     </VBox>
 </VBox>
