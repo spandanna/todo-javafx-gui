@@ -1,5 +1,6 @@
 package application;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,17 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.scene.input.KeyCode;
 
 
-public class Controller {
+public class MainController {
 
 	static Connection connection;
     @FXML
@@ -41,6 +49,8 @@ public class Controller {
     
     @FXML
     private TextField newToDoTextField;
+    
+
 
     private static final String DB_NAME = "database.db";
     private static final String CONNECTION_STRING = "jdbc:sqlite:" + "src/application/" + DB_NAME;
@@ -49,6 +59,7 @@ public class Controller {
     static final String COLUMN_NAME = "name";
     static final String COLUMN_DO_DATE = "do_date";
     static final String COLUMN_COMPLETED = "completed";
+    static final String COLUMN_TYPE = "type";
     public LocalDate currentDate = LocalDate.now();
     
     public void initialize() {
@@ -64,7 +75,16 @@ public class Controller {
 			loadDueItems(newValue);
 		});
     }
-
+    
+    public void openHabitWindow(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Habit.fxml"));
+        Parent habitRoot = loader.load();
+        Stage habitStage = new Stage();
+        habitStage.initModality(Modality.APPLICATION_MODAL);
+        habitStage.setScene(new Scene(habitRoot));
+        habitStage.showAndWait();
+    }
+    
     private void setNewTextField() {
         newToDoTextField.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
@@ -101,7 +121,7 @@ public class Controller {
 	    }
 	}
 
-	public void editToDoItem(@SuppressWarnings("exports") CheckBox checkBox, TodoItem newItem) {
+	public void editToDoItem(CheckBox checkBox, TodoItem newItem) {
 		String oldText = newItem.getName();
 	    TextInputDialog dialog = new TextInputDialog(oldText);
 	    dialog.setTitle("Edit To Do Item");
@@ -172,6 +192,8 @@ public class Controller {
 		        Button deleteButton = createDeleteButton(todolist, newItem, newCheckBox);
 	            HBox hbox = new HBox(newCheckBox, deleteButton);
 	            todolist.getChildren().add(hbox); 
+	            
+	           
 	            newToDoTextField.clear();
 			}
             
@@ -190,7 +212,7 @@ public class Controller {
             statement.executeUpdate(
             		"CREATE TABLE IF NOT EXISTS " + TABLE_TODO +
             		" (" + COLUMN_ID + " STRING PRIMARY KEY, " + COLUMN_NAME + " TEXT, "
-            		+ COLUMN_DO_DATE + " DATE, " + COLUMN_COMPLETED + " BOOLEAN)"
+            		+ COLUMN_DO_DATE + " DATE, " + COLUMN_TYPE + " STRING, "+ COLUMN_COMPLETED + " BOOLEAN)"
             		);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();

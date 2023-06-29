@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="600.0" spacing="10" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+<VBox prefHeight="400.0" prefWidth="600.0" spacing="10" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -27,5 +27,6 @@
         <DatePicker fx:id="newDoDatePicker" promptText="Do date" />
         <Button fx:id="addButton" onAction="#addToDoItem" text="+" />
     </HBox>
+    <Button fx:id="habitButton" onAction="#openHabitWindow" text="Habits" />
     </VBox>
 </VBox>
