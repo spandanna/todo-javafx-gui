@@ -5,4 +5,17 @@
 .header {
     -fx-text-fill: #4d4d4d;
 }
+.delete-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-graphic: url('https://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/16/Actions-edit-delete-icon.png');
+    -fx-opacity: 0;
+}
+
+.delete-button:hover {
+    -fx-background-color: transparent;
+    -fx-graphic: url('https://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/16/Actions-edit-delete-icon.png');
+    -fx-opacity: 1;
+}
+
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
