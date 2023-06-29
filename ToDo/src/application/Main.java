@@ -9,9 +9,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
     
     @Override
-    public void start(@SuppressWarnings("exports") Stage primaryStage) {
+    public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
+        	Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
             primaryStage.setScene(scene);
@@ -20,8 +20,10 @@ public class Main extends Application {
             e.printStackTrace();
         }
     }
-
+        
     public static void main(String[] args) {
         launch(args);
     }
+
+
 }

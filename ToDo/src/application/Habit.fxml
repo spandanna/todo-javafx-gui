@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="400.0" prefWidth="600.0" spacing="10" styleClass="root" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.HabitController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <Label fx:id="title" styleClass="header" text="Habits" textAlignment="CENTER">
+        <font>
+            <javafx.scene.text.Font size="24.0" />
+        </font>
+    </Label>
+    <ListView fx:id="habitListView" prefHeight="200.0" prefWidth="200.0" />
+    <VBox>
+        <Label text="Name" />
+        <TextField fx:id="habitNameTextField" />
+        <Label text="Description" />
+        <TextArea fx:id="habitDescriptionTextArea" prefHeight="50.0" prefWidth="200.0" />
+        <Label text="Recurrence" />
+        <ComboBox fx:id="habitRecurrenceComboBox" promptText="Choose recurrence" />
+    </VBox>
+    <HBox>
+        <Button fx:id="saveHabitButton" onAction="#saveHabit" text="Save" />
+        <Button fx:id="deleteHabitButton" onAction="#deleteHabit" text="Delete" />
+    </HBox>
+</VBox>
+
